@@ -1,0 +1,45 @@
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<script src="lib/jquery-1.12.4.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/backbone.js"></script>
+<script type="text/javascript">
+	//http://ameblo.jp/softwaredeveloper/entry-11967017493.html
+	$(function(){
+		var SampleView = Backbone.View.extend({
+			tagName : 'input', // (1)
+			className : 'class_input', // (2)
+			id : 'id_input', // (3)
+			attributes : { // (4)
+				type : 'button',
+				value : '更新'
+			},
+			events: {
+				//'click' : function(event){
+				//	console.log('onClick');
+				//}
+				'click' : 'onClick',
+				'mouseover' : 'onMouseover',
+				'mouseleave' : 'onMouseleave'
+			},
+			onClick: function(event){
+				console.log('onClick');
+			},
+			onMouseover: function(event){
+				console.log('onMouseover');
+			},
+			onMouseleave: function(event){
+				console.log('onMouseleave');
+			}
+		});
+		var sampleView = new SampleView();
+		$('body').append(sampleView.el);
+		//$('body').append(sampleView.render().el);
+	});
+</script>
+</head>
+<body>
+
+</body>
+</html>
