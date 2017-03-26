@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>タイトル</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://underscorejs.org/underscore.js"></script>
+<script src="http://backbonejs.org/backbone.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		//$("#btn").val("テスト");
+		//alert($("#btn").val());
+	});
+	Book = Backbone.Model.extend({
+		urlRoot: 'http://localhost/books/',
+		initialize: function() {
+			console.log('a new book');
+			this.on("change", function(){
+				console.log('Model Changes Detected:');
+				if(this.hasChanged('name')){
+					console.log('The name has changed');
+					console.log('The name has changed from ' + this.previous('name') + ' to ' + this.get('name'));
+				}
+				if(this.hasChanged('year')){
+					console.log('The year has changed');
+				}
+				console.log('Changed attributes: ' + JSON.stringify(this.changed));
+				console.log('Previous attributes: ' + JSON.stringify(this.previousAttributes()));
+				console.log('Current attributes: ' + JSON.stringify(this));
+			});
+			this.on("change:name", function(){
+				console.log('The name attribute has changed');
+			});
+			this.on("invalid", function(model, error){
+				console.log("**Validation Error : " + error + "**");
+			});
+		},
+		defaults: {
+			name: 'Book Title',
+			author: 'No One'
+		},
+		printDetails: function(){
+			console.log(this.get('name') + ' by ' + this.get('author'));
+		},
+		validate: function(attrs){
+			if(attrs.year < 2000){
+				return 'Year must be after 2000';
+			}
+			if(!attrs.name){
+				return 'A name must be provided';
+			}
+		},
+		parse: function(response, xhr){
+			response.bookType = 'ebook';
+			return response;
+		}
+	});
+	
+	var thisBook = new Book();
+	
+	/*3.2.5*/
+	// 2000年よりも前の年を設定
+	thisBook.set('year', 1999, {validate: true});
+	console.log('Check year change: '+ thisBook.get('year'));
+	// モデルから名前を削除
+	thisBook.unset('name', {validate: true});
+	console.log('Check if name was removed: ' + thisBook.get('name'));
+	
+	// モデルが有効かどうかをチェック
+	console.log('Is model valid: ' + thisBook.isValid());
+	// validate フラグを指定しない状態でルール違反
+	thisBook.set('year', 1998);
+	// モデルが有効かどうかをチェック
+	console.log('Is model valid: ' + thisBook.isValid());
+	
+	thisBook.save(thisBook.attributes,{
+		success: function(model, response, options){
+			console.log('Model saved');
+			console.log('Id: ' + thisBook.get('id'));
+		},
+		error: function(model, xhr, options){
+			console.log('Failed to save model');
+		}
+	});
+	
+	thisBook.fetch({
+		success: function(model, posponse, options){
+			console.log('Fetch success');
+		},
+		error: function(model, response, options){
+			console.log('Fetch error');
+		}
+	});
+	
+	thisBook.destroy({
+		success: function(model, posponse, options){
+			console.log('Destroy success');
+		},
+		error: function(model, response, options){
+			console.log('Destroy error');
+		},
+		wait: true
+	});
+	
+	EBook = Book.extend({
+		getWebLink: function(){
+			return 'http://www.apress.com' + this.get('name');
+		},
+		printDetails: function(){
+			console.log('An ebook');
+			Book.prototype.printDetails.call(this);
+		}
+	});
+	var ebook = new EBook({name: "Beginning Backbone", author: "James Sugrue"});
+	console.log(ebook.getWebLink());
+	
+	
+	var Library = Backbone.Collection.extend({model: Book,
+		initialize: function(){
+			console.log('Creating a new library collection');
+		}
+	});
+	//var myLibrary = new Library();
+	var bookOne = new Book({name: 'Beginning Backbone', author: 'James Sugrue', year: 2013});
+	var bookTwo = new Book({name: 'Pro Javascript Design Patterns', author:'Dustin Diaz, Ross Harmes', year: 2012});
+	var myLibrary = new Library([bookOne, bookTwo]);
+	console.log('Library contains ' + myLibrary.length + ' books');
+	var bookThree = new Book({name: 'Pro Node.js for Developers', author: 'Colin J. Ihrig', year: 2011});
+	myLibrary.add(bookThree);
+	console.log('Library contains ' + myLibrary.length + ' books');
+	
+	var bookFour = new Book({name: 'Pro jQuery', author: 'Adam Freeman'});
+	var bookFive = new Book({name: 'Pro Javascript Performance', author: 'Tom Barker'});
+	console.log('Library has ' + myLibrary.length + ' books');
+</script>
+</head>
+<body>
+	<div id="todo">
+	</div>
+	<input type="button" id="btn" value="ボタン">
+	<script type="text/template id="item-template">
+		<div>
+			<input id="todo_complete" type="checkbox" <%= completed ? 'checked="checked"' : '' %>>
+			<%= title %>
+		</div>
+	</script>
+</body>
+</html>
