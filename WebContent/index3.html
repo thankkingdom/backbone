@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<title>TEST</title>
+<script src="lib/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+var comlist = {1:"a", 2:"b", 3:"c"};
+//alert(JSON.stringify(comlist));
+//var list = jQuery.parseJSON(comlist);
+$(function(){
+	for(var key in comlist){
+		//alert(key + ':' +  comlist[key]);
+		$('#select_comlist').append($('<option>').val(key).text(comlist[key]));
+		//$('#select_comlist').append($('<option>').attr({vallue: key}).text(comlist[key]));
+	}
+	$("#select_comlist").prepend($("<option>").val("").text("全て"));
+	$("#select_comlist").val("");
+
+
+});
+//$("#comlist").append();
+</script>
+</head>
+<body>
+<select id="select_comlist"></select>
+</body>
+</html>
