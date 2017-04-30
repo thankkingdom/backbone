@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf8">
+<script src="lib/jquery-1.12.4.js"></script>
+<script src="lib/underscore.js"></script>
+<script src="lib/backbone.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(e){
+		$("#new_btn").on("click", function(){
+			$("#detail").html("<select class='choice'></select>");
+			$(".choice").append($("<option>").val("").text("選択してください"));
+			$(".choice").append($("<option>").val("1").text("OPT1"));
+			$(".choice").append($("<option>").val("2").text("OPT2"));
+		});
+		//当たり前だがタグ生成前はイベントを足せない。
+		$(".choice").on("change", function(){
+			alert(JSON.stringify(this));
+		});
+		$("#check_btn").on("click", function(){
+			if($("#detail").find(".choice") != 'undefine'){
+				alert("find out");
+			}
+		});
+		$(".change").on('click', function(){
+			alert("LOL");
+		});
+	});
+</script>
+</head>
+<body>
+<input type="button" id="new_btn" value="新規作成">
+<input type="button" id="check_btn" value="しらべる"><br>
+<div id="list"></div>
+<div id="detail"></div>
+</body>
+</html>
