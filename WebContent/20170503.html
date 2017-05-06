@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="js/lib/jquery-1.12.4.js"></script>
+<script src="js/lib/underscore.js"></script>
+<script src="js/lib/backbone.js"></script>
+<script type="text/javascript">
+var Book = Backbone.Model.extend({
+	initialize: function() {
+		console.log('a new book');
+	},
+	defaults: {
+		name: 'Book Title',
+		author: 'No One'
+	},
+	printDetails: function(){
+		console.log(this.get('name') + 'by ' + this.get('author'));
+	}
+});
+
+var myBook = new Book();
+
+var Library = Backbone.Collection.extend({
+	model: Book,
+	initialize: function(){
+		this.on("remove", function(removedModel, models, options){
+			console.log('elemont removed at ' + options.index);
+		}),
+		this.on("add", function(addModel, models, options){
+			console.log(JSON.stringify(addModel));
+			console.log(JSON.stringify(models));
+			console.log(JSON.stringify(options));
+			//console.log('element addes at' + JSON.stringify(options));
+		})
+	}
+});
+
+var myLibrary = new Library();
+myLibrary.add(myBook);
+
+</script>
+</head>
+<body>
+
+</body>
+</html>
